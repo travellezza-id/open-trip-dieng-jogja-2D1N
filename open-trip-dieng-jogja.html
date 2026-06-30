@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Trip Dieng + Jogja · Travellezza.id</title>
+<style>
+  :root{
+    --bg:#1c1714;
+    --surface:#241d18;
+    --surface2:#2c241e;
+    --line:#3c322a;
+    --sulfur:#e8b94a;
+    --sulfur-dim:#9c7a35;
+    --teal:#2f8f7a;
+    --teal-light:#7fd6bd;
+    --cream:#f3ead8;
+    --muted:#b3a692;
+    --stone:#6b5d4f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    line-height:1.6;
+  }
+  .display{font-family: Georgia, 'Times New Roman', serif;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:5rem 1.5rem 4rem;
+    text-align:center;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 50% 120%, rgba(232,185,74,0.18), transparent 60%),
+      radial-gradient(circle at 80% -10%, rgba(47,143,122,0.15), transparent 55%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    position:relative;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    color:var(--sulfur);
+    margin-bottom:1.2rem;
+  }
+  .hero h1{
+    position:relative;
+    font-size:clamp(2.2rem, 6vw, 3.6rem);
+    margin:0 0 0.6rem;
+    font-weight:400;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 span{color:var(--teal-light);}
+  .hero p.sub{
+    position:relative;
+    color:var(--muted);
+    font-size:1.05rem;
+    max-width:540px;
+    margin:0 auto 2.2rem;
+  }
+  .hero-meta{
+    position:relative;
+    display:flex; flex-wrap:wrap; justify-content:center; gap:0.8rem;
+  }
+  .pill{
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:0.45rem 1rem;
+    font-size:0.82rem;
+    color:var(--cream);
+    background:rgba(255,255,255,0.02);
+    display:flex; align-items:center; gap:0.4rem;
+  }
+  .pill b{color:var(--sulfur);}
+
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.5rem;}
+
+  section{padding:3.5rem 0;}
+  .section-head{margin-bottom:2rem;}
+  .section-head .tag{
+    text-transform:uppercase; letter-spacing:0.2em; font-size:0.7rem; color:var(--teal-light);
+    display:block; margin-bottom:0.5rem;
+  }
+  .section-head h2{
+    font-size:1.7rem; margin:0; font-weight:400;
+  }
+  .section-head p{color:var(--muted); margin:0.6rem 0 0; max-width:520px;}
+
+  /* ITINERARY — accordion */
+  .day{
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-bottom:0.9rem;
+    overflow:hidden;
+    background:var(--surface);
+  }
+  .day-head{
+    display:flex; align-items:center; gap:1rem;
+    padding:1.1rem 1.3rem;
+    cursor:pointer;
+    user-select:none;
+  }
+  .day-num{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1px solid var(--sulfur-dim);
+    color:var(--sulfur);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.95rem;
+  }
+  .day-title{flex:1;}
+  .day-title .label{font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;}
+  .day-title .name{font-size:1.05rem; margin-top:0.15rem;}
+  .chevron{
+    width:20px; height:20px; flex-shrink:0;
+    transition:transform 0.25s ease;
+    color:var(--muted);
+  }
+  .day.open .chevron{transform:rotate(180deg); color:var(--sulfur);}
+  .day-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.35s ease;
+  }
+  .day-body-inner{padding:0 1.3rem 1.3rem 1.3rem;}
+  .timeline{border-top:1px solid var(--line); padding-top:1rem;}
+  .tl-item{
+    display:flex; gap:1rem;
+    padding:0.7rem 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .tl-item:last-child{border-bottom:none;}
+  .tl-time{
+    flex-shrink:0; width:54px;
+    font-size:0.85rem; color:var(--teal-light);
+    font-weight:600;
+  }
+  .tl-content .tl-name{font-size:0.95rem; color:var(--cream);}
+  .tl-content .tl-desc{font-size:0.82rem; color:var(--muted); margin-top:0.15rem;}
+
+  /* DESTINATIONS — tabs + cards */
+  .tabs{display:flex; gap:0.5rem; margin-bottom:1.5rem;}
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:0.65rem 1rem;
+    border-radius:10px;
+    border:1px solid var(--line);
+    cursor:pointer;
+    font-size:0.85rem;
+    color:var(--muted);
+    background:var(--surface);
+    transition:all 0.2s ease;
+  }
+  .tab.active{
+    border-color:var(--teal);
+    color:var(--teal-light);
+    background:rgba(47,143,122,0.12);
+  }
+  .dest-grid{display:grid; grid-template-columns:1fr 1fr; gap:0.7rem;}
+  .dest-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1rem 1.1rem;
+    background:var(--surface);
+    display:none;
+  }
+  .dest-card.show{display:block;}
+  .dest-card .dest-name{font-size:0.95rem; color:var(--sulfur); margin-bottom:0.3rem;}
+  .dest-card .dest-desc{font-size:0.8rem; color:var(--muted);}
+
+  /* FACILITIES */
+  .fac-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;
+  }
+  .fac-item{
+    display:flex; align-items:flex-start; gap:0.6rem;
+    padding:0.8rem 1rem;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--surface);
+    font-size:0.88rem;
+  }
+  .fac-item .check{
+    flex-shrink:0; color:var(--teal-light);
+    margin-top:0.1rem;
+  }
+
+  .fac-item.exclude{color:var(--stone); border-color:var(--line);}
+  .fac-item .x{flex-shrink:0; color:var(--stone); margin-top:0.1rem;}
+
+  /* PRICE */
+  .price-box{
+    border:1px solid var(--sulfur-dim);
+    border-radius:16px;
+    background:linear-gradient(180deg, rgba(232,185,74,0.07), rgba(47,143,122,0.05));
+    padding:2rem 1.6rem;
+    text-align:center;
+  }
+  .price-box .from{font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em;}
+  .price-box .amount{
+    font-size:2.6rem; color:var(--sulfur); margin:0.4rem 0 0.2rem;
+  }
+  .price-box .per{color:var(--muted); font-size:0.9rem;}
+  .price-note{font-size:0.8rem; color:var(--stone); margin-top:1rem;}
+  .cta{
+    display:inline-block; margin-top:1.6rem;
+    background:var(--teal);
+    color:#0e1f1a;
+    font-weight:600;
+    padding:0.85rem 2.2rem;
+    border-radius:999px;
+    text-decoration:none;
+    font-size:0.95rem;
+    transition:transform 0.15s ease;
+  }
+  .cta:hover{transform:translateY(-2px);}
+
+  .fleet-tabs{display:flex; gap:0.6rem; margin-bottom:1.4rem;}
+  .fleet-tab{
+    flex:1; text-align:center; cursor:pointer;
+    padding:0.8rem 0.6rem;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--surface);
+    color:var(--muted);
+    font-size:0.85rem;
+    transition:all 0.2s ease;
+  }
+  .fleet-tab .f-icon{display:block; font-size:1.4rem; margin-bottom:0.3rem;}
+  .fleet-tab.active{
+    border-color:var(--sulfur-dim);
+    color:var(--sulfur);
+    background:rgba(232,185,74,0.08);
+  }
+  .fleet-card{
+    display:none;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:var(--surface);
+    padding:1.4rem 1.5rem;
+  }
+  .fleet-card.show{display:block;}
+  .fleet-top{margin-bottom:1.1rem;}
+  .fleet-name{font-size:1.15rem; color:var(--cream);}
+  .fleet-cap{font-size:0.82rem; color:var(--muted); margin-top:0.2rem;}
+  .fleet-incl{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:1rem 0;
+    margin-bottom:1.1rem;
+  }
+  .fleet-incl-title{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--teal-light); margin-bottom:0.5rem;}
+  .fleet-incl-list{display:flex; flex-wrap:wrap; gap:0.5rem;}
+  .fleet-incl-list span{
+    font-size:0.8rem; color:var(--muted);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:0.3rem 0.75rem;
+  }
+  .fleet-price{display:flex; align-items:baseline; gap:0.6rem; flex-wrap:wrap;}
+  .fleet-price .from{font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; width:100%;}
+  .fleet-price .amount{font-size:2rem; color:var(--sulfur); margin:0.2rem 0 0;}
+  .fleet-price .per{color:var(--muted); font-size:0.85rem;}
+
+  footer{
+    text-align:center;
+    padding:2.5rem 1.5rem 3rem;
+    color:var(--stone);
+    font-size:0.78rem;
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width:520px){
+    .dest-grid, .fac-grid{grid-template-columns:1fr;}
+    .hero{padding:3.5rem 1.2rem 3rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Travellezza.id presents</div>
+  <h1 class="display">Dieng <span>&</span> Jogja</h1>
+  <p class="sub">Dua hari satu malam menyusuri dataran tinggi berkabut dan jalanan bersejarah — dari kawah berasap hingga keraton kuno.</p>
+  <div class="hero-meta">
+    <div class="pill"><b>2H1M</b> Jumat malam – Minggu malam</div>
+    <div class="pill"><b>Armada</b> Hiace · Medium Bus · Big Bus</div>
+    <div class="pill"><b>Start</b> Sampang, Madura</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="section-head">
+      <span class="tag">Rundown perjalanan</span>
+      <h2>Dua hari, satu malam</h2>
+      <p>Ketuk setiap hari untuk melihat susunan acara lengkap.</p>
+    </div>
+
+    <div class="day" data-day="1">
+      <div class="day-head" onclick="toggleDay(this)">
+        <div class="day-num">1</div>
+        <div class="day-title">
+          <div class="label">Jumat malam</div>
+          <div class="name">Berangkat menuju Dieng</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="day-body">
+        <div class="day-body-inner">
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-time">19.30</div><div class="tl-content"><div class="tl-name">Kumpul di meeting point Sampang</div></div></div>
+            <div class="tl-item"><div class="tl-time">20.00</div><div class="tl-content"><div class="tl-name">Berangkat menuju Dieng</div><div class="tl-desc">Via Suramadu – Tol Trans Jawa, istirahat di rest area sesuai kebutuhan.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day" data-day="2">
+      <div class="day-head" onclick="toggleDay(this)">
+        <div class="day-num">2</div>
+        <div class="day-title">
+          <div class="label">Sabtu</div>
+          <div class="name">Explore Dieng & Jogja</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="day-body">
+        <div class="day-body-inner">
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-time">07.00</div><div class="tl-content"><div class="tl-name">Tiba di Wonosobo — sarapan</div></div></div>
+            <div class="tl-item"><div class="tl-time">08.00</div><div class="tl-content"><div class="tl-name">Gardu Pandang Tieng</div><div class="tl-desc">Panorama pegunungan Dieng dari ketinggian.</div></div></div>
+            <div class="tl-item"><div class="tl-time">09.00</div><div class="tl-content"><div class="tl-name">Telaga Warna & Batu Ratapan Angin</div><div class="tl-desc">Danau vulkanik dengan gradasi warna unik.</div></div></div>
+            <div class="tl-item"><div class="tl-time">10.30</div><div class="tl-content"><div class="tl-name">Kawah Sikidang</div><div class="tl-desc">Kawah aktif dengan permukaan mendidih.</div></div></div>
+            <div class="tl-item"><div class="tl-time">11.30</div><div class="tl-content"><div class="tl-name">Kompleks Candi Arjuna</div><div class="tl-desc">Candi Hindu tertua di Jawa Tengah.</div></div></div>
+            <div class="tl-item"><div class="tl-time">12.30</div><div class="tl-content"><div class="tl-name">Makan siang</div></div></div>
+            <div class="tl-item"><div class="tl-time">13.30</div><div class="tl-content"><div class="tl-name">Perjalanan menuju Jogja</div><div class="tl-desc">Estimasi ±4 jam perjalanan.</div></div></div>
+            <div class="tl-item"><div class="tl-time">17.30</div><div class="tl-content"><div class="tl-name">Check in hotel</div></div></div>
+            <div class="tl-item"><div class="tl-time">19.00</div><div class="tl-content"><div class="tl-name">Wisata malam Malioboro + makan malam</div><div class="tl-desc">Acara bebas.</div></div></div>
+            <div class="tl-item"><div class="tl-time">22.00</div><div class="tl-content"><div class="tl-name">Istirahat</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day" data-day="3">
+      <div class="day-head" onclick="toggleDay(this)">
+        <div class="day-num">3</div>
+        <div class="day-title">
+          <div class="label">Minggu</div>
+          <div class="name">Explore Jogja & pulang</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="day-body">
+        <div class="day-body-inner">
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-time">07.00</div><div class="tl-content"><div class="tl-name">Sarapan</div></div></div>
+            <div class="tl-item"><div class="tl-time">08.00</div><div class="tl-content"><div class="tl-name">Check out hotel</div></div></div>
+            <div class="tl-item"><div class="tl-time">08.30</div><div class="tl-content"><div class="tl-name">Keraton Yogyakarta</div><div class="tl-desc">Istana resmi Kesultanan Ngayogyakarta.</div></div></div>
+            <div class="tl-item"><div class="tl-time">10.00</div><div class="tl-content"><div class="tl-name">Taman Sari</div><div class="tl-desc">Bekas taman kerajaan & kolam pemandian.</div></div></div>
+            <div class="tl-item"><div class="tl-time">11.30</div><div class="tl-content"><div class="tl-name">Belanja oleh-oleh khas Jogja</div><div class="tl-desc">Bakpia, batik, kaus, dan lainnya.</div></div></div>
+            <div class="tl-item"><div class="tl-time">12.30</div><div class="tl-content"><div class="tl-name">Makan siang</div></div></div>
+            <div class="tl-item"><div class="tl-time">13.30</div><div class="tl-content"><div class="tl-name">Berangkat kembali ke Sampang</div></div></div>
+            <div class="tl-item"><div class="tl-time">23.00–01.00</div><div class="tl-content"><div class="tl-name">Estimasi tiba di Sampang</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="tag">Destinasi wisata</span>
+      <h2>9 titik tak terlupakan</h2>
+      <p>Pilih wilayah untuk melihat detail destinasi.</p>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'dieng')">Dieng</div>
+      <div class="tab" onclick="switchTab(this,'jogja')">Jogja</div>
+    </div>
+    <div class="dest-grid" id="dieng">
+      <div class="dest-card show"><div class="dest-name">Gardu Pandang Tieng</div><div class="dest-desc">Titik tertinggi untuk menikmati panorama pegunungan Dieng.</div></div>
+      <div class="dest-card show"><div class="dest-name">Telaga Warna</div><div class="dest-desc">Danau vulkanik dengan gradasi warna yang berubah seiring cahaya.</div></div>
+      <div class="dest-card show"><div class="dest-name">Batu Ratapan Angin</div><div class="dest-desc">Spot tebing dengan pemandangan Telaga Warna dari atas.</div></div>
+      <div class="dest-card show"><div class="dest-name">Kawah Sikidang</div><div class="dest-desc">Kawah vulkanik aktif dengan permukaan tanah yang mendidih.</div></div>
+      <div class="dest-card show"><div class="dest-name">Kompleks Candi Arjuna</div><div class="dest-desc">Candi Hindu tertua di Jawa Tengah, berdiri sejak abad ke-8.</div></div>
+    </div>
+    <div class="dest-grid" id="jogja" style="display:none;">
+      <div class="dest-card show"><div class="dest-name">Malioboro</div><div class="dest-desc">Jalan legendaris untuk wisata malam dan kulineran.</div></div>
+      <div class="dest-card show"><div class="dest-name">Keraton Yogyakarta</div><div class="dest-desc">Istana resmi Kesultanan Ngayogyakarta yang masih aktif.</div></div>
+      <div class="dest-card show"><div class="dest-name">Taman Sari</div><div class="dest-desc">Bekas taman kerajaan lengkap dengan kolam pemandian.</div></div>
+      <div class="dest-card show"><div class="dest-name">Pusat oleh-oleh Jogja</div><div class="dest-desc">Berburu bakpia, batik, dan kaus khas Jogja.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="tag">Sudah termasuk</span>
+      <h2>Yang kamu dapatkan</h2>
+    </div>
+    <div class="fac-grid">
+      <div class="fac-item"><span class="check">✓</span> Transportasi PP Hiace</div>
+      <div class="fac-item"><span class="check">✓</span> Sopir & BBM</div>
+      <div class="fac-item"><span class="check">✓</span> Hotel 1 malam (twin sharing)</div>
+      <div class="fac-item"><span class="check">✓</span> Makan 4x + breakfast hotel</div>
+      <div class="fac-item"><span class="check">✓</span> Tiket masuk 9 destinasi</div>
+      <div class="fac-item"><span class="check">✓</span> Air mineral</div>
+      <div class="fac-item"><span class="check">✓</span> Snack selama perjalanan</div>
+      <div class="fac-item"><span class="check">✓</span> Tour leader pendamping</div>
+    </div>
+
+    <div class="section-head" style="margin-top:2.2rem;">
+      <span class="tag" style="color:var(--stone);">Belum termasuk</span>
+      <h2 style="font-size:1.3rem;">Perlu disiapkan sendiri</h2>
+    </div>
+    <div class="fac-grid">
+      <div class="fac-item exclude"><span class="x">✕</span> Pengeluaran pribadi</div>
+      <div class="fac-item exclude"><span class="x">✕</span> Oleh-oleh</div>
+      <div class="fac-item exclude"><span class="x">✕</span> Makan di luar itinerary</div>
+      <div class="fac-item exclude"><span class="x">✕</span> Upgrade kamar (single room)</div>
+      <div class="fac-item exclude"><span class="x">✕</span> Biaya di luar program</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="tag">Pilih armada</span>
+      <h2>Sesuaikan dengan rombonganmu</h2>
+      <p>Setiap armada disediakan dengan kursi tersisa lega — tidak diisi penuh, supaya perjalanan jauh tetap nyaman.</p>
+    </div>
+    <div class="fleet-tabs">
+      <div class="fleet-tab active" onclick="switchFleet(this,'hiace')">
+        <i class="f-icon">🚐</i><span>Hiace</span>
+      </div>
+      <div class="fleet-tab" onclick="switchFleet(this,'medium')">
+        <i class="f-icon">🚌</i><span>Medium Bus</span>
+      </div>
+      <div class="fleet-tab" onclick="switchFleet(this,'big')">
+        <i class="f-icon">🚍</i><span>Big Bus</span>
+      </div>
+    </div>
+
+    <div class="fleet-card show" id="fleet-hiace">
+      <div class="fleet-top">
+        <div>
+          <div class="fleet-name">Hiace Commuter</div>
+          <div class="fleet-cap">14 kursi · diisi 12 peserta untuk kenyamanan ekstra</div>
+        </div>
+      </div>
+      <div class="fleet-incl">
+        <div class="fleet-incl-title">Sudah termasuk</div>
+        <div class="fleet-incl-list">
+          <span>✓ Sewa kendaraan + sopir</span>
+          <span>✓ BBM</span>
+          <span>✓ Hotel 1 malam, twin sharing</span>
+          <span>✓ Makan 4x + tiket 9 destinasi</span>
+        </div>
+      </div>
+      <div class="fleet-price">
+        <div class="from">Harga mulai dari</div>
+        <div class="amount display">Rp 1.849.000</div>
+        <div class="per">per orang</div>
+      </div>
+    </div>
+
+    <div class="fleet-card" id="fleet-medium">
+      <div class="fleet-top">
+        <div>
+          <div class="fleet-name">Medium Bus</div>
+          <div class="fleet-cap">31 kursi · diisi 28 peserta untuk kenyamanan ekstra</div>
+        </div>
+      </div>
+      <div class="fleet-incl">
+        <div class="fleet-incl-title">Sudah termasuk</div>
+        <div class="fleet-incl-list">
+          <span>✓ Sewa kendaraan + sopir</span>
+          <span>✓ BBM</span>
+          <span>✓ Hotel 1 malam, twin sharing</span>
+          <span>✓ Makan 4x + tiket 9 destinasi</span>
+        </div>
+      </div>
+      <div class="fleet-price">
+        <div class="from">Harga mulai dari</div>
+        <div class="amount display">Rp 1.349.000</div>
+        <div class="per">per orang</div>
+      </div>
+    </div>
+
+    <div class="fleet-card" id="fleet-big">
+      <div class="fleet-top">
+        <div>
+          <div class="fleet-name">Big Bus</div>
+          <div class="fleet-cap">45–50 kursi · diisi 40 peserta untuk kenyamanan ekstra</div>
+        </div>
+      </div>
+      <div class="fleet-incl">
+        <div class="fleet-incl-title">Sudah termasuk</div>
+        <div class="fleet-incl-list">
+          <span>✓ Sewa kendaraan + sopir</span>
+          <span>✓ BBM</span>
+          <span>✓ Hotel 1 malam, twin sharing</span>
+          <span>✓ Makan 4x + tiket 9 destinasi</span>
+        </div>
+      </div>
+      <div class="fleet-price">
+        <div class="from">Harga mulai dari</div>
+        <div class="amount display">Rp 1.199.000</div>
+        <div class="per">per orang</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="price-box">
+      <div class="price-note">Harga dapat berubah sesuai jumlah peserta final dan armada yang dipilih. Hubungi kami untuk konfirmasi seat.</div>
+      <a class="cta" href="https://wa.me/628813454702" target="_blank">Tanya & booking via WhatsApp</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>Travellezza.id · Open Trip Dieng + Jogja 2H1M</footer>
+
+<script>
+function toggleDay(headEl){
+  const day = headEl.parentElement;
+  const body = day.querySelector('.day-body');
+  const isOpen = day.classList.contains('open');
+  document.querySelectorAll('.day').forEach(d=>{
+    d.classList.remove('open');
+    d.querySelector('.day-body').style.maxHeight = null;
+  });
+  if(!isOpen){
+    day.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+function switchTab(tabEl, target){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.getElementById('dieng').style.display = target==='dieng' ? 'grid' : 'none';
+  document.getElementById('jogja').style.display = target==='jogja' ? 'grid' : 'none';
+}
+function switchFleet(tabEl, target){
+  document.querySelectorAll('.fleet-tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.querySelectorAll('.fleet-card').forEach(c=>c.classList.remove('show'));
+  document.getElementById('fleet-'+target).classList.add('show');
+}
+document.querySelector('.day').classList.add('open');
+document.querySelector('.day .day-body').style.maxHeight = document.querySelector('.day .day-body-inner').scrollHeight + 'px';
+</script>
+
+</body>
+</html>
